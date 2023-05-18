@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        function getColumns(input) {
+            if (input.files && input.files[0]) {
+                var formData = new FormData();
+                formData.append('file', input.files[0]);
+
+                $.ajax({
+                    url: '/columns',
+                    method: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(data) {
+                        var dropdown = $('#column');
+                        dropdown.empty();
+                        $.each(data.columns, function(i, val) {
+                            dropdown.append($('<option></option>').attr('value', val).text(val));
+                        });
+                    }
+                });
+            }
+        }
+    </script>
+</head>
+<body>
+<form action="/" method="post" enctype="multipart/form-data">
+    Select Excel file to upload:
+    <input type="file" name="file" id="file" onchange="getColumns(this)">
+    <br>
+    Select distribution type:
+    <select name="dist_type" id="dist_type">
+        <option value="normal">Normal</option>
+        <option value="lognormal">Lognormal</option>
+    </select>
+    <br>
+    Select column to analyze:
+    <select name="column" id="column">
+        <!-- Options will be added here dynamically -->
+    </select>
+    <br>
+    <input type="submit" value="Upload and Analyze" name="submit">
+</form>
+</body>
+</html>
